@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             onCancel = {
                 binding.textViewStatus2.text = "download cancelled"
                 binding.progressBar2.progress = 0
-                binding.textViewProgress2.text = "Progress: $0%"
+                binding.textViewProgress2.text = "Progress: 0%"
 
             },
             onError = {
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             onCancel = {
                 binding.textViewStatus1.text = "download cancelled"
                 binding.progressBar1.progress = 0
-                binding.textViewProgress1.text = "Progress: $0%"
+                binding.textViewProgress1.text = "Progress: 0%"
 
             },
             onError = {

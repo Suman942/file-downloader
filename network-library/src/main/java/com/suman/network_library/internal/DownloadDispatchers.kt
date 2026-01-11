@@ -1,6 +1,7 @@
 package com.suman.network_library.internal
 
 import com.suman.network_library.HttpClient
+import com.suman.network_library.local_storage.DatabaseConstant
 import com.suman.network_library.local_storage.DatabaseHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,15 +50,21 @@ class DownloadDispatchers(private val httpClient: HttpClient,
     }
 
     fun cancel(request: DownloadRequest) {
-        request.isCancelled = true
-        request.isPaused = false
-        request.job.cancel()
+        if (request.state == DatabaseConstant.STATUS_PAUSED){
+            request.onCancel.invoke()
+        }else {
+            request.state = DatabaseConstant.STATUS_FAILED
+            request.job.cancel()
+        }
     }
 
     fun pause(request: DownloadRequest) {
-        request.isPaused = true
-        request.isCancelled = false
-        request.job.cancel()
+        if (request.state == DatabaseConstant.STATUS_FAILED){
+            request.onPause.invoke()
+        }else {
+            request.state = DatabaseConstant.STATUS_PAUSED
+            request.job.cancel()
+        }
     }
 
     fun cancelAll() {

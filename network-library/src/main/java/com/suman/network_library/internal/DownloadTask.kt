@@ -74,14 +74,16 @@ class DownloadTask(
 //                databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
             }catch (e: Exception){
-                if (downloadRequest.isPaused){
-                    onPause()
-                    updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_PAUSED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                when(downloadRequest.state){
+                    DatabaseConstant.STATUS_FAILED->{
+                        onCancel()
+                        updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                    }
+                    DatabaseConstant.STATUS_PAUSED ->{
+                        onPause()
+                        updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_PAUSED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
 
-                }
-                if (downloadRequest.isCancelled){
-                    onCancel()
-                    updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                    }
                 }
             }
 
