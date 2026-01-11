@@ -22,7 +22,7 @@ class DownloadRequest private constructor(
     internal lateinit var onResume: (value: Long) -> Unit
     internal lateinit var onCancel: () -> Unit
     internal lateinit var onComplete: () -> Unit
-    internal lateinit var onError: (error: String) -> Unit
+    internal lateinit var onError: (error: String?) -> Unit
 
     data class Builder(
         val url: String,

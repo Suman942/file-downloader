@@ -43,7 +43,7 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
         onStart: ()-> Unit = {},
         onPause:() -> Unit = {},
         onProgress:(value : Int)-> Unit = {_,->},
-        onError:(error: String)-> Unit= {_,->},
+        onError:(error: String?)-> Unit= {_,->},
         onCancel:()-> Unit = {},
         onComplete:() -> Unit = {},
         onResume:(value : Long) -> Unit = {_,->}

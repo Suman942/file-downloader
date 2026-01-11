@@ -5,6 +5,7 @@ import com.suman.network_library.HttpClient
 import com.suman.network_library.local_storage.DatabaseConstant
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadEntity
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +20,7 @@ class DownloadTask(
         onPause: () -> Unit = {},
         onComplete: () -> Unit = {},
         onProgress: (value: Int) -> Unit = {},
-        onError: (error: String) -> Unit = {},
+        onError: (error: String?) -> Unit = {},
         onCancel: () -> Unit = {},
         onResume: (value: Long) -> Unit = {}
     ) {
@@ -68,8 +69,8 @@ class DownloadTask(
                 databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
             }catch (e: Exception){
-                Log.d("DownloadProgress","error: ${e.message}")
-
+                Log.d("DownloadProgress","exception error: ${e.message}")
+                    onError(e.message)
 //                updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
             }
 
