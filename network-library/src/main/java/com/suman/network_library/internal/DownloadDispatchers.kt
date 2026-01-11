@@ -8,10 +8,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class DownloadDispatchers(private val httpClient: HttpClient) {
+class DownloadDispatchers(private val httpClient: HttpClient,
+    private val databaseHelper: DatabaseHelper) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private val databaseHelper: DatabaseHelper = DatabaseHelper.getInstance()
+//    private val databaseHelper: DatabaseHelper = DatabaseHelper.getInstance()
 
     fun enqueue(downloadReq: DownloadRequest): Int {
         val job = scope.launch {
@@ -34,7 +35,10 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
             onComplete = {
                 executeOnMainThread { downloadReq.onComplete() }
             },
-            onResume = {}
+            onResume = {
+//                executeOnMainThread { downloadReq.onResume(databaseHelper.getDownloadedBytes()) }
+
+            }
 
         )
     }

@@ -9,18 +9,29 @@ import com.suman.network_library.local_storage.DatabaseHelper
 class Downloader private constructor(private val downloaderConfig: DownloaderConfig) {
 
     companion object{
+//        @Volatile
+//        private var isInitialized = false
+//        fun create(context:Context,downloaderConfig: DownloaderConfig = DownloaderConfig()): Downloader{
+//           if (!isInitialized){
+//               DatabaseHelper.initialise(context)
+//               isInitialized = true
+//           }
+//            return Downloader(downloaderConfig)
+//        }
+
         @Volatile
-        private var isInitialized = false
-        fun create(context:Context,downloaderConfig: DownloaderConfig = DownloaderConfig()): Downloader{
-           if (!isInitialized){
-               DatabaseHelper.initialise(context)
-               isInitialized = true
-           }
-            return Downloader(downloaderConfig)
+        private var instance : Downloader?=null
+        fun create(context: Context,downloaderConfig: DownloaderConfig = DownloaderConfig()): Downloader{
+            return instance ?: synchronized(this) {
+                instance ?: run {
+                    DatabaseHelper.initialise(context)
+                    Downloader(downloaderConfig).also { instance = it }
+                }
+            }
         }
     }
-
-    private val requestQueue = DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
+    private val databaseHelper = DatabaseHelper.getInstance()
+    private val requestQueue = DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient,databaseHelper),databaseHelper)
     fun newReqBuilder(url: String,dirPath: String,fileName: String) : DownloadRequest.Builder{
         return DownloadRequest.Builder(url,dirPath,fileName)
             .readTimeOut(downloaderConfig.readTimeOut)
