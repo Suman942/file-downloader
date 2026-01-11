@@ -1,10 +1,7 @@
 package com.suman.network_library.internal
 
-import com.suman.network_library.local_storage.DatabaseHelper
-
 class DownloadRequestQueue(
-    private val dispatchers: DownloadDispatchers,
-    private val databaseHelper: DatabaseHelper
+    private val dispatchers: DownloadDispatchers
 ) {
 
     private val idRequestMap: HashMap<Int, DownloadRequest> = hashMapOf()
@@ -21,8 +18,8 @@ class DownloadRequestQueue(
 
     fun resume(id: Int) {
         idRequestMap[id]?.let {
-            it.onResume.invoke(databaseHelper.getDownloadedBytes(id))
-            dispatchers.enqueue(it)
+//            it.onResume.invoke(it.totalBytes)
+            dispatchers.resume(it)
         }
     }
 

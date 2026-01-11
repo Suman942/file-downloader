@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         currentDownloadId2 = downloader.enqueue(
             request2,
             onStart = {
-                binding.textViewStatus2.text = "downloading..."
+                binding.textViewStatus2.text = "onStart"
             },
             onProgress = {
                 binding.textViewProgress2.text = "Progress: $it %"
@@ -118,6 +118,10 @@ class MainActivity : AppCompatActivity() {
             onComplete = {
                 binding.textViewStatus2.text = "onCompleted \n${downloadsPath}"
             },
+            onResume = {
+                binding.textViewStatus1.text = "onResume"
+
+            }
         )
 
     }
@@ -139,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         currentDownloadId = downloader.enqueue(
             request,
             onStart = {
-                binding.textViewStatus1.text = "downloading..."
+                binding.textViewStatus1.text = "onStart"
             },
             onProgress = {
                 binding.textViewProgress1.text = "Progress: $it %"
@@ -161,6 +165,11 @@ class MainActivity : AppCompatActivity() {
             onComplete = {
                 binding.textViewStatus1.text = "onCompleted \n${downloadsPath}"
             },
+            onResume = {
+                binding.textViewStatus1.text = "onResume"
+
+            }
+
         )
 
     }

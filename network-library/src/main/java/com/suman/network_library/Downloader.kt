@@ -30,8 +30,8 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
             }
         }
     }
-    private val databaseHelper = DatabaseHelper.getInstance()
-    private val requestQueue = DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient,databaseHelper),databaseHelper)
+//    private val databaseHelper = DatabaseHelper.getInstance()
+    private val requestQueue = DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
     fun newReqBuilder(url: String,dirPath: String,fileName: String) : DownloadRequest.Builder{
         return DownloadRequest.Builder(url,dirPath,fileName)
             .readTimeOut(downloaderConfig.readTimeOut)

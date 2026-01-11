@@ -1,43 +1,34 @@
 package com.suman.network_library.internal
 
+import android.util.Log
 import com.suman.network_library.HttpClient
-import com.suman.network_library.local_storage.DatabaseConstant
-import com.suman.network_library.local_storage.DatabaseHelper
+import com.suman.network_library.local_storage.DownloadStates
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class DownloadDispatchers(private val httpClient: HttpClient,
-    private val databaseHelper: DatabaseHelper) {
+class DownloadDispatchers(private val httpClient: HttpClient) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-//    private val databaseHelper: DatabaseHelper = DatabaseHelper.getInstance()
-
-    fun enqueue(downloadReq: DownloadRequest): Int {
-        val job = scope.launch {
-            execute(downloadReq)
-        }
-        downloadReq.job = job
-        return downloadReq.downloadId
-    }
 
     private suspend fun execute(downloadReq: DownloadRequest) {
 
-        DownloadTask(downloadReq, httpClient,databaseHelper).run(
+        DownloadTask(downloadReq, httpClient).run(
             onStart = {
                 executeOnMainThread { downloadReq.onStart() }
             },
             onProgress = { executeOnMainThread { downloadReq.onProgress(it) } },
             onPause = { executeOnMainThread { downloadReq.onPause() } },
             onError = { executeOnMainThread { downloadReq.onError(it) } },
-            onCancel = {executeOnMainThread { downloadReq.onCancel() }},
+            onCancel = { executeOnMainThread { downloadReq.onCancel() } },
             onComplete = {
                 executeOnMainThread { downloadReq.onComplete() }
             },
             onResume = {
-                executeOnMainThread { downloadReq.onResume(databaseHelper.getDownloadedBytes(downloadReq.downloadId)) }
+                executeOnMainThread {
+                    downloadReq.onResume(downloadReq.totalBytes)
+                }
             }
 
         )
@@ -49,25 +40,42 @@ class DownloadDispatchers(private val httpClient: HttpClient,
         }
     }
 
+    fun enqueue(downloadReq: DownloadRequest): Int {
+        val job = scope.launch {
+            execute(downloadReq)
+        }
+        downloadReq.job = job
+        downloadReq.state = DownloadStates.STATUS_DOWNLOADING
+        return downloadReq.downloadId
+    }
+
+    fun resume(downloadReq: DownloadRequest): Int {
+        val job = scope.launch {
+            execute(downloadReq)
+        }
+        downloadReq.job = job
+        downloadReq.state = DownloadStates.STATUS_DOWNLOADING
+        Log.d("DownloadProgress", "resume dispatchers: ${downloadReq.downloadedBytes}")
+        return downloadReq.downloadId
+    }
+
     fun cancel(request: DownloadRequest) {
-        if (request.state == DatabaseConstant.STATUS_PAUSED){
+        if (request.state == DownloadStates.STATUS_PAUSED) {
             request.onCancel.invoke()
-        }else {
-            request.state = DatabaseConstant.STATUS_FAILED
+        } else {
+            request.state = DownloadStates.STATUS_FAILED
             request.job.cancel()
         }
     }
 
     fun pause(request: DownloadRequest) {
-        if (request.state == DatabaseConstant.STATUS_FAILED){
+        if (request.state == DownloadStates.STATUS_FAILED) {
             request.onPause.invoke()
-        }else {
-            request.state = DatabaseConstant.STATUS_PAUSED
+        } else {
+            request.state = DownloadStates.STATUS_PAUSED
             request.job.cancel()
         }
     }
 
-    fun cancelAll() {
-        scope.cancel()
-    }
+
 }

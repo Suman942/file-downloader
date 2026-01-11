@@ -2,19 +2,18 @@ package com.suman.network_library.internal
 
 import android.util.Log
 import com.suman.network_library.HttpClient
-import com.suman.network_library.local_storage.DatabaseConstant
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadEntity
-import kotlinx.coroutines.CancellationException
+import com.suman.network_library.local_storage.DownloadStates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class DownloadTask(
     private val downloadRequest: DownloadRequest,
-    private val httpClient: HttpClient,
-    private val databaseHelper: DatabaseHelper
+    private val httpClient: HttpClient
 ) {
-
+    private val databaseHelper: DatabaseHelper = DatabaseHelper.getInstance()
     suspend fun run(
         onStart: () -> Unit = {},
         onPause: () -> Unit = {},
@@ -27,14 +26,16 @@ class DownloadTask(
         withContext(Dispatchers.IO) {
             try {
                 // download request insert and start down loading
-                insertRequest()
-//                if (downloadRequest.downloadedBytes > 0){
-//                    onResume(downloadRequest.downloadedBytes)
-//                }else {
-//                    onStart()
-//                }
-                onStart()
+                val isResume = downloadRequest.downloadedBytes > 0
+                Log.d("DownloadProgress", "resume task: ${downloadRequest.downloadedBytes}")
 
+                insertRequest()
+
+                if (isResume) {
+                    onResume(downloadRequest.downloadedBytes)
+                } else {
+                    onStart()
+                }
                 var lastSavedProgress = -1
                 // use of http client
                 httpClient.connect(downloadRequest) { read, total ->
@@ -45,21 +46,18 @@ class DownloadTask(
                         onProgress(progress)
                         if (progress > lastSavedProgress) {
                             lastSavedProgress = progress
-                            Log.d("DownloadProgress","last progress: ${lastSavedProgress}")
 
                             updateRequest(
                                 downloadRequest.downloadId,
-                                DatabaseConstant.STATUS_DOWNLOADING,
+                                DownloadStates.STATUS_DOWNLOADING,
                                 downloadRequest.downloadedBytes,
                                 total
                             )
                         }
-                    }else{
-                        Log.d("DownloadProgress","progress_53")
-
+                    } else {
                         updateRequest(
                             downloadRequest.downloadId,
-                            DatabaseConstant.STATUS_FAILED,
+                            DownloadStates.STATUS_FAILED,
                             downloadRequest.downloadedBytes,
                             total
                         )
@@ -67,29 +65,46 @@ class DownloadTask(
                 }
                 updateRequest(
                     downloadRequest.downloadId,
-                    DatabaseConstant.STATUS_COMPLETED,
+                    DownloadStates.STATUS_COMPLETED,
                     downloadRequest.downloadedBytes,
                     downloadRequest.totalBytes
                 )
 //                databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
-            }catch (e: Exception){
-                when(downloadRequest.state){
-                    DatabaseConstant.STATUS_FAILED->{
+            }catch (e: CancellationException){
+                e.stackTrace
+                when (downloadRequest.state) {
+                    DownloadStates.STATUS_FAILED -> {
                         onCancel()
-                        updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                        updateRequest(
+                            downloadRequest.downloadId,
+                            DownloadStates.STATUS_FAILED,
+                            downloadRequest.downloadedBytes,
+                            downloadRequest.totalBytes
+                        )
                     }
-                    DatabaseConstant.STATUS_PAUSED ->{
+
+                    DownloadStates.STATUS_PAUSED -> {
                         onPause()
-                        updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_PAUSED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                        updateRequest(
+                            downloadRequest.downloadId,
+                            DownloadStates.STATUS_PAUSED,
+                            downloadRequest.downloadedBytes,
+                            downloadRequest.totalBytes
+                        )
 
                     }
                 }
+
+            }
+            catch (e: Exception) {
+                onError(e.message)
             }
 
         }
     }
-    private fun updateRequest(id: Int,status: Int,downloadedBytes: Long,totalBytes: Long){
+
+    private fun updateRequest(id: Int, status: Int, downloadedBytes: Long, totalBytes: Long) {
         databaseHelper.updateProgress(
             id = id,
             status = status,
@@ -97,7 +112,8 @@ class DownloadTask(
             totalBytes = totalBytes
         )
     }
-    private fun insertRequest(){
+
+    private fun insertRequest() {
         val downloadEntity = DownloadEntity(
             id = downloadRequest.downloadId,
             url = downloadRequest.url,
@@ -106,7 +122,7 @@ class DownloadTask(
             downloadedBytes = downloadRequest.downloadedBytes,
             totalBytes = downloadRequest.totalBytes,
             tag = downloadRequest.tag,
-            status = DatabaseConstant.STATUS_DOWNLOADING,
+            status = DownloadStates.STATUS_DOWNLOADING,
             lastModified = downloadRequest.lastModified,
             updatedAt = System.currentTimeMillis(),
             error = null
