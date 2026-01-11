@@ -29,6 +29,7 @@ class DownloadTask(
                 insertRequest()
                 onStart()
 
+                var lastSavedProgress = -1
                 // use of http client
                 httpClient.connect(downloadRequest) { read, total ->
                     downloadRequest.totalBytes = total
@@ -36,13 +37,18 @@ class DownloadTask(
                     if (total > 0) {
                         val progress = ((read * 100) / total).toInt()
                         onProgress(progress)
-                        Log.d("DownloadProgress","progress: ${progress}")
-                        updateRequest(
-                            downloadRequest.downloadId,
-                            DatabaseConstant.STATUS_DOWNLOADING,
-                            downloadRequest.downloadedBytes,
-                            total
-                        )
+                        Log.d("DownloadProgress","progress: ${progress} $lastSavedProgress")
+                        if (progress > lastSavedProgress) {
+                            lastSavedProgress = progress
+                            Log.d("DownloadProgress","last progress: ${lastSavedProgress}")
+
+                            updateRequest(
+                                downloadRequest.downloadId,
+                                DatabaseConstant.STATUS_DOWNLOADING,
+                                downloadRequest.downloadedBytes,
+                                total
+                            )
+                        }
                     }else{
                         updateRequest(
                             downloadRequest.downloadId,
