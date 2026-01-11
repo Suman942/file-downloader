@@ -23,6 +23,8 @@ class DownloadRequest private constructor(
     internal lateinit var onCancel: () -> Unit
     internal lateinit var onComplete: () -> Unit
     internal lateinit var onError: (error: String?) -> Unit
+    internal var isPaused = false
+    internal var isCancelled = false
 
     data class Builder(
         val url: String,

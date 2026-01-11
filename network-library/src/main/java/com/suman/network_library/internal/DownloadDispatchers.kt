@@ -36,8 +36,7 @@ class DownloadDispatchers(private val httpClient: HttpClient,
                 executeOnMainThread { downloadReq.onComplete() }
             },
             onResume = {
-//                executeOnMainThread { downloadReq.onResume(databaseHelper.getDownloadedBytes()) }
-
+                executeOnMainThread { downloadReq.onResume(databaseHelper.getDownloadedBytes(downloadReq.downloadId)) }
             }
 
         )
@@ -50,12 +49,15 @@ class DownloadDispatchers(private val httpClient: HttpClient,
     }
 
     fun cancel(request: DownloadRequest) {
-        databaseHelper.deleteDownload(request.downloadId)
+        request.isCancelled = true
+        request.isPaused = false
         request.job.cancel()
     }
 
     fun pause(request: DownloadRequest) {
-        request.job.cancel() // if I use pause here can it reach the Download Task class
+        request.isPaused = true
+        request.isCancelled = false
+        request.job.cancel()
     }
 
     fun cancelAll() {

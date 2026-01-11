@@ -28,6 +28,11 @@ class DownloadTask(
             try {
                 // download request insert and start down loading
                 insertRequest()
+//                if (downloadRequest.downloadedBytes > 0){
+//                    onResume(downloadRequest.downloadedBytes)
+//                }else {
+//                    onStart()
+//                }
                 onStart()
 
                 var lastSavedProgress = -1
@@ -66,12 +71,18 @@ class DownloadTask(
                     downloadRequest.downloadedBytes,
                     downloadRequest.totalBytes
                 )
-                databaseHelper.deleteDownload(downloadRequest.downloadId)
+//                databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
             }catch (e: Exception){
-                Log.d("DownloadProgress","exception error: ${e.message}")
-                    onError(e.message)
-//                updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                if (downloadRequest.isPaused){
+                    onPause()
+                    updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_PAUSED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+
+                }
+                if (downloadRequest.isCancelled){
+                    onCancel()
+                    updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+                }
             }
 
         }
