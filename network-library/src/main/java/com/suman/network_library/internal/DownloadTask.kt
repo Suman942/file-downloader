@@ -37,7 +37,6 @@ class DownloadTask(
                     if (total > 0) {
                         val progress = ((read * 100) / total).toInt()
                         onProgress(progress)
-                        Log.d("DownloadProgress","progress: ${progress} $lastSavedProgress")
                         if (progress > lastSavedProgress) {
                             lastSavedProgress = progress
                             Log.d("DownloadProgress","last progress: ${lastSavedProgress}")
@@ -50,6 +49,8 @@ class DownloadTask(
                             )
                         }
                     }else{
+                        Log.d("DownloadProgress","progress_53")
+
                         updateRequest(
                             downloadRequest.downloadId,
                             DatabaseConstant.STATUS_FAILED,
@@ -64,10 +65,12 @@ class DownloadTask(
                     downloadRequest.downloadedBytes,
                     downloadRequest.totalBytes
                 )
+                databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
             }catch (e: Exception){
                 Log.d("DownloadProgress","error: ${e.message}")
-                updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
+
+//                updateRequest(downloadRequest.downloadId, DatabaseConstant.STATUS_FAILED,downloadRequest.downloadedBytes,downloadRequest.totalBytes)
             }
 
         }

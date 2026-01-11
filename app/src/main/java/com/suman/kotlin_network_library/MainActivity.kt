@@ -84,14 +84,13 @@ class MainActivity : AppCompatActivity() {
 
             onCancel = {
                 binding.textViewStatus.text = "download cancelled"
-
+                binding.progressBar.progress = 0
             },
             onError = {
                 binding.textViewStatus.text = it
             },
             onComplete = {
                 binding.textViewStatus.text = "onCompleted \n${downloadsPath}"
-
             },
         )
 

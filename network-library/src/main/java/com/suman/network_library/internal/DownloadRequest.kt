@@ -15,7 +15,6 @@ class DownloadRequest private constructor(
     internal var totalBytes: Long = 0
     internal var downloadedBytes: Long = 0
     internal var lastModified : Long = System.currentTimeMillis()
-    internal var updatedAt : Long = 0
     internal lateinit var job: Job
     internal lateinit var onStart: () -> Unit
     internal lateinit var onProgress: (value: Int) -> Unit

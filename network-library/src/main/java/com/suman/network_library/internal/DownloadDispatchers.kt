@@ -50,7 +50,12 @@ class DownloadDispatchers(private val httpClient: HttpClient,
     }
 
     fun cancel(request: DownloadRequest) {
+        databaseHelper.deleteDownload(request.downloadId)
         request.job.cancel()
+    }
+
+    fun pause(request: DownloadRequest) {
+        request.job.cancel() // if I use pause here can it reach the Download Task class
     }
 
     fun cancelAll() {

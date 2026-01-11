@@ -14,7 +14,7 @@ class DownloadRequestQueue(private val dispatchers: DownloadDispatchers,
     fun pause(id: Int){
         idRequestMap[id]?.let {
             it.onPause.invoke()
-            dispatchers.cancel(it)
+            dispatchers.pause(it)
         }
     }
 
