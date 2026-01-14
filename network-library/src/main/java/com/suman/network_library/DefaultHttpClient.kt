@@ -81,7 +81,7 @@ class DefaultHttpClient : HttpClient {
     ) {
         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
         var bytesRead: Int
-        var _downloadedBytes = downloadedBytes
+        var tempDownloadedBytes = downloadedBytes
 
         while (true) {
             coroutineContext.ensureActive()
@@ -89,11 +89,9 @@ class DefaultHttpClient : HttpClient {
             if (bytesRead == -1) break
 
             output.write(buffer, 0, bytesRead)
-            _downloadedBytes += bytesRead
+            tempDownloadedBytes += bytesRead
 
-            // Debug logs to help trace issues
-
-            onBytes(_downloadedBytes, totalBytes)
+            onBytes(tempDownloadedBytes, totalBytes)
         }
     }
 

@@ -18,7 +18,6 @@ class DownloadRequestQueue(
 
     fun resume(id: Int) {
         idRequestMap[id]?.let {
-//            it.onResume.invoke(it.totalBytes)
             dispatchers.resume(it)
         }
     }

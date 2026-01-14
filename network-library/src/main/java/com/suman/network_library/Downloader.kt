@@ -8,20 +8,14 @@ import com.suman.network_library.local_storage.DatabaseHelper
 
 class Downloader private constructor(private val downloaderConfig: DownloaderConfig) {
 
-    companion object{
-//        @Volatile
-//        private var isInitialized = false
-//        fun create(context:Context,downloaderConfig: DownloaderConfig = DownloaderConfig()): Downloader{
-//           if (!isInitialized){
-//               DatabaseHelper.initialise(context)
-//               isInitialized = true
-//           }
-//            return Downloader(downloaderConfig)
-//        }
+    companion object {
 
         @Volatile
-        private var instance : Downloader?=null
-        fun create(context: Context,downloaderConfig: DownloaderConfig = DownloaderConfig()): Downloader{
+        private var instance: Downloader? = null
+        fun create(
+            context: Context,
+            downloaderConfig: DownloaderConfig = DownloaderConfig()
+        ): Downloader {
             return instance ?: synchronized(this) {
                 instance ?: run {
                     DatabaseHelper.initialise(context)
@@ -30,25 +24,27 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
             }
         }
     }
-//    private val databaseHelper = DatabaseHelper.getInstance()
-    private val requestQueue = DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
-    fun newReqBuilder(url: String,dirPath: String,fileName: String) : DownloadRequest.Builder{
-        return DownloadRequest.Builder(url,dirPath,fileName)
+
+    private val requestQueue =
+        DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
+
+    fun newReqBuilder(url: String, dirPath: String, fileName: String): DownloadRequest.Builder {
+        return DownloadRequest.Builder(url, dirPath, fileName)
             .readTimeOut(downloaderConfig.readTimeOut)
             .connectTimeOut(downloaderConfig.connectionTimeOut)
     }
 
     fun enqueue(
         request: DownloadRequest,
-        onStart: ()-> Unit = {},
-        onPause:() -> Unit = {},
-        onProgress:(value : Int)-> Unit = {_,->},
-        onError:(error: String?)-> Unit= {_,->},
-        onCancel:()-> Unit = {},
-        onComplete:() -> Unit = {},
-        onResume:(value : Long) -> Unit = {_,->}
+        onStart: () -> Unit = {},
+        onPause: () -> Unit = {},
+        onProgress: (value: Int) -> Unit = { _ -> },
+        onError: (error: String?) -> Unit = { _ -> },
+        onCancel: () -> Unit = {},
+        onComplete: () -> Unit = {},
+        onResume: (value: Long) -> Unit = { _ -> }
 
-    ):Int{
+    ): Int {
         request.onStart = onStart
         request.onPause = onPause
         request.onProgress = onProgress
@@ -59,15 +55,15 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
         return requestQueue.enqueue(request)
     }
 
-    fun cancel(id: Int){
+    fun cancel(id: Int) {
         requestQueue.cancel(id)
     }
 
-    fun pause(id: Int){
+    fun pause(id: Int) {
         requestQueue.pause(id)
     }
 
-    fun resume(id: Int){
+    fun resume(id: Int) {
         requestQueue.resume(id)
     }
 }
