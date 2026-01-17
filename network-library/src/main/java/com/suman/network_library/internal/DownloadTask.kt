@@ -27,8 +27,6 @@ class DownloadTask(
             try {
                 // download request insert and start down loading
                 val isResume = downloadRequest.downloadedBytes > 0
-                Log.d("DownloadProgress", "resume task: ${downloadRequest.downloadedBytes}")
-
                 insertRequest()
 
                 if (isResume) {
@@ -69,7 +67,7 @@ class DownloadTask(
                     downloadRequest.downloadedBytes,
                     downloadRequest.totalBytes
                 )
-//                databaseHelper.deleteDownload(downloadRequest.downloadId)
+                databaseHelper.deleteDownload(downloadRequest.downloadId)
                 onComplete()
             }catch (e: CancellationException){
                 e.stackTrace

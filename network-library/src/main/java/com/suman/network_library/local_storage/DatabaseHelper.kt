@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper private constructor(private val dbHelper: SQLiteOpenHelper) {
+internal class DatabaseHelper private constructor(private val dbHelper: SQLiteOpenHelper) {
 
     companion object {
         @Volatile
@@ -66,14 +66,14 @@ class DatabaseHelper private constructor(private val dbHelper: SQLiteOpenHelper)
         }
     }
 
-    fun updateProgress(id: Int, downloadedBytes: Long, status: Int? = null,totalBytes: Long) {
+    fun updateProgress(id: Int, downloadedBytes: Long, status: Int? = null, totalBytes: Long) {
         val values = ContentValues().apply {
             put("downloaded_bytes", downloadedBytes)
             status?.let {
                 put("status", it)
             }
             put("updated_at", System.currentTimeMillis())
-            put("total_bytes",totalBytes)
+            put("total_bytes", totalBytes)
         }
         writableDb.update(
             "downloads",
@@ -92,5 +92,25 @@ class DatabaseHelper private constructor(private val dbHelper: SQLiteOpenHelper)
         )
     }
 
+    fun getPendingDownloads(): List<DownloadEntity> {
+        val downloads = mutableListOf<DownloadEntity>()
+
+        val cursor = readableDb.query(
+            "downloads",
+            null,// all column
+            null,
+            null,
+            null,
+            null,
+            "updated_at DESC"
+        )
+
+        cursor.use {
+            while (it.moveToNext()) {
+                downloads.add(it.toDownloadEntity())
+            }
+        }
+        return downloads
+    }
 
 }

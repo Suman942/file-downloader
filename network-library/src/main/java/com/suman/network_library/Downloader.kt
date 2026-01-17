@@ -5,6 +5,7 @@ import com.suman.network_library.internal.DownloadDispatchers
 import com.suman.network_library.internal.DownloadRequest
 import com.suman.network_library.internal.DownloadRequestQueue
 import com.suman.network_library.local_storage.DatabaseHelper
+import com.suman.network_library.local_storage.DownloadStates
 
 class Downloader private constructor(private val downloaderConfig: DownloaderConfig) {
 
@@ -19,11 +20,32 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
             return instance ?: synchronized(this) {
                 instance ?: run {
                     DatabaseHelper.initialise(context)
-                    Downloader(downloaderConfig).also { instance = it }
+                    Downloader(downloaderConfig).also {
+                        instance = it
+                        it.resumePendingDownloads()
+                        it
+                    }
                 }
             }
         }
     }
+
+    private fun resumePendingDownloads() {
+        val pending = DatabaseHelper.getInstance()
+            .getPendingDownloads()
+
+        pending.forEach {
+            val request = DownloadRequest.fromEntity(entity = it
+            , config = downloaderConfig)
+            if (request.state == DownloadStates.STATUS_PAUSED){
+                DatabaseHelper.getInstance().deleteDownload(request.downloadId)
+            }
+            requestQueue.enqueue(
+                request
+            )
+        }
+    }
+
 
     private val requestQueue =
         DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))

@@ -1,6 +1,6 @@
 package com.suman.network_library.local_storage
 
-data class DownloadEntity(
+internal data class DownloadEntity(
     val id: Int,
     val url: String,
     val dirPath: String,
