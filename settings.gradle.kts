@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "kotlin-network-library"
 include(":app")
-include(":network-library")
+include(":file_downloader_library")

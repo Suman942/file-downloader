@@ -6,24 +6,29 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.suman.kotlin_network_library.databinding.ActivityMainBinding
+import com.suman.kotlin_network_library.di.component.ApplicationComponent
+import com.suman.kotlin_network_library.di.component.DaggerActivityComponent
+import com.suman.kotlin_network_library.di.module.ActivityModule
 import com.suman.network_library.Constants
 import com.suman.network_library.Downloader
 import com.suman.network_library.internal.DownloadRequest
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+    @Inject lateinit var adapter: DownloadAdapter
     private lateinit var binding: ActivityMainBinding
     private lateinit var downloader: Downloader
     private lateinit var request: DownloadRequest
     private lateinit var request2: DownloadRequest
-
     private val downloadsPath =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
     private var currentDownloadId: Int? = null
     private var currentDownloadId2: Int? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getDependencies()
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -35,7 +40,14 @@ class MainActivity : AppCompatActivity() {
 
         downloader = (application as MyApplication).downloader
 
+        initialise()
+    }
+
+    private fun initialise() {
         binding.apply {
+//            recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+//            recyclerView.adapter = adapter
+//            adapter.submitList(Data.imageUrls)
             downloadBtn1.setOnClickListener {
                 startDownload()
             }
@@ -77,9 +89,14 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-
-
     }
+
+    private fun getDependencies(){
+        DaggerActivityComponent.builder().applicationComponent((application as MyApplication).applicationComponent)
+            .activityModule(ActivityModule(this))
+            .build().inject(this)
+    }
+
     private fun startDownload2() {
         val url =
 "https://images.pexels.com/photos/236047/pexels-photo-236047.jpeg?cs=srgb&dl=landscape-nature-sky-236047.jpg&fm=jpg"

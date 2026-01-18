@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/downloadGroup1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:layout_marginBottom="24dp">
+
+    <TextView
+        android:id="@+id/textViewTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Progress & Status vertically stacked -->
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/textViewProgress1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Progress: 0%"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/textViewStatus1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: Idle"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Primary action -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/downloadBtn1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Secondary actions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pauseBtn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pause"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/resumeBtn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Resume"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelBtn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
+</layout>
