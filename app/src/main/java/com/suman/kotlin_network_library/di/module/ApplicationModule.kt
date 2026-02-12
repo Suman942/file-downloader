@@ -3,8 +3,10 @@ package com.suman.kotlin_network_library.di.module
 import android.content.Context
 import com.suman.kotlin_network_library.MyApplication
 import com.suman.kotlin_network_library.di.ApplicationContext
+import com.suman.network_library.Downloader
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class ApplicationModule(private val application: MyApplication) {
@@ -14,4 +16,8 @@ class ApplicationModule(private val application: MyApplication) {
     fun providesApplicationContext(): Context {
         return application
     }
+
+    @Provides
+    @Singleton
+    fun providesDownloader(@ApplicationContext context: Context): Downloader = Downloader.create(context)
 }

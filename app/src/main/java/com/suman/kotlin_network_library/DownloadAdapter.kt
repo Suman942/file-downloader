@@ -7,28 +7,78 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.suman.kotlin_network_library.databinding.DownloadItemLayoutBinding
 import com.suman.kotlin_network_library.di.ActivityScope
-
 @ActivityScope
 class DownloadAdapter :
-    ListAdapter<String, DownloadAdapter.ViewHolder>(DiffCallback) {
+    ListAdapter<DownloadUiModel, DownloadAdapter.ViewHolder>(DiffCallback) {
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<String>() {
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean =
-                oldItem == newItem
+        private val DiffCallback = object : DiffUtil.ItemCallback<DownloadUiModel>() {
+            override fun areItemsTheSame(
+                oldItem: DownloadUiModel,
+                newItem: DownloadUiModel
+            ): Boolean = oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: String, newItem: String): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: DownloadUiModel,
+                newItem: DownloadUiModel
+            ): Boolean = oldItem == newItem
         }
     }
-    var onDownloadClick : (String) -> Unit = {}
+
+    // 👉 Set from Fragment / Activity (after injection)
+    var onDownload: (String, String) -> Unit = { _, _ -> }
+    var onPause: (Int) -> Unit = {}
+    var onResume: (Int) -> Unit = {}
+    var onCancel: (Int) -> Unit = {}
 
     inner class ViewHolder(
-         private val binding: DownloadItemLayoutBinding
+        private val binding: DownloadItemLayoutBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: String)=with(binding) {
-            downloadBtn1.setOnClickListener { onDownloadClick.invoke(item) }
+        fun bind(item: DownloadUiModel) = with(binding) {
+
+//            fileNameTxt.text = item.fileName
+//            progressBar.progress = item.progress
+//            progressTxt.text = "${item.progress}%"
+
+            when (item.status) {
+                DownloadStatus.IDLE->{
+
+                }
+                DownloadStatus.DOWNLOADING -> {
+                    downloadBtn1.text = "Pause"
+                    downloadBtn1.isEnabled = true
+                    downloadBtn1.setOnClickListener {
+                        onPause(item.id)
+                    }
+                }
+
+                DownloadStatus.PAUSED -> {
+                    downloadBtn1.text = "Resume"
+                    downloadBtn1.isEnabled = true
+                    downloadBtn1.setOnClickListener {
+                        onResume(item.id)
+                    }
+                }
+
+                DownloadStatus.COMPLETED -> {
+                    downloadBtn1.text = "Completed"
+                    downloadBtn1.isEnabled = false
+                }
+
+                DownloadStatus.CANCELLED,
+                DownloadStatus.ERROR -> {
+                    downloadBtn1.text = "Retry"
+                    downloadBtn1.isEnabled = true
+                    downloadBtn1.setOnClickListener {
+                        onDownload(item.url, item.fileName)
+                    }
+                }
+            }
+
+            cancelBtn1.setOnClickListener {
+                onCancel(item.id)
+            }
         }
     }
 

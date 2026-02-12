@@ -13,6 +13,11 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <!-- Download 1 UI group -->
             <LinearLayout
                 android:id="@+id/downloadGroup1"
@@ -20,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="8dp"
+                android:visibility="gone"
                 android:background="?attr/selectableItemBackground"
                 android:layout_marginBottom="24dp">
 
@@ -102,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="8dp"
+                android:visibility="gone"
                 android:background="?attr/selectableItemBackground"
                 android:layout_marginBottom="24dp">
 

@@ -1,6 +1,5 @@
 package com.suman.network_library.internal
 
-import android.util.Log
 import com.suman.network_library.HttpClient
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadEntity
@@ -15,13 +14,13 @@ class DownloadTask(
 ) {
     private val databaseHelper: DatabaseHelper = DatabaseHelper.getInstance()
     suspend fun run(
-        onStart: () -> Unit = {},
-        onPause: () -> Unit = {},
-        onComplete: () -> Unit = {},
-        onProgress: (value: Int) -> Unit = {},
-        onError: (error: String?) -> Unit = {},
-        onCancel: () -> Unit = {},
-        onResume: (value: Long) -> Unit = {}
+        onStart: (Int) -> Unit = {},
+        onPause: (Int) -> Unit = {},
+        onComplete: (Int) -> Unit = {},
+        onProgress: (id: Int, value: Int) -> Unit = { _, _ -> },
+        onError: (id: Int, error: String?) -> Unit = { _, _ -> },
+        onCancel: (Int) -> Unit = {},
+        onResume: (id: Int, value: Long) -> Unit = { _, _ -> }
     ) {
         withContext(Dispatchers.IO) {
             try {
@@ -30,9 +29,9 @@ class DownloadTask(
                 insertRequest()
 
                 if (isResume) {
-                    onResume(downloadRequest.downloadedBytes)
+                    onResume(downloadRequest.downloadId, downloadRequest.downloadedBytes)
                 } else {
-                    onStart()
+                    onStart(downloadRequest.downloadId)
                 }
                 var lastSavedProgress = -1
                 // use of http client
@@ -41,7 +40,7 @@ class DownloadTask(
                     downloadRequest.downloadedBytes = read
                     if (total > 0) {
                         val progress = ((read * 100) / total).toInt()
-                        onProgress(progress)
+                        onProgress(downloadRequest.downloadId, progress)
                         if (progress > lastSavedProgress) {
                             lastSavedProgress = progress
 
@@ -68,12 +67,12 @@ class DownloadTask(
                     downloadRequest.totalBytes
                 )
                 databaseHelper.deleteDownload(downloadRequest.downloadId)
-                onComplete()
-            }catch (e: CancellationException){
+                onComplete(downloadRequest.downloadId)
+            } catch (e: CancellationException) {
                 e.stackTrace
                 when (downloadRequest.state) {
                     DownloadStates.STATUS_FAILED -> {
-                        onCancel()
+                        onCancel(downloadRequest.downloadId)
                         updateRequest(
                             downloadRequest.downloadId,
                             DownloadStates.STATUS_FAILED,
@@ -83,7 +82,7 @@ class DownloadTask(
                     }
 
                     DownloadStates.STATUS_PAUSED -> {
-                        onPause()
+                        onPause(downloadRequest.downloadId)
                         updateRequest(
                             downloadRequest.downloadId,
                             DownloadStates.STATUS_PAUSED,
@@ -94,9 +93,8 @@ class DownloadTask(
                     }
                 }
 
-            }
-            catch (e: Exception) {
-                onError(e.message)
+            } catch (e: Exception) {
+                onError(downloadRequest.downloadId, e.message)
             }
 
         }

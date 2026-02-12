@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-
+<data>
+    <variable
+        name="item"
+        type="com.suman.kotlin_network_library.DownloadUiModel" />
+</data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/downloadGroup1"
     android:layout_width="match_parent"

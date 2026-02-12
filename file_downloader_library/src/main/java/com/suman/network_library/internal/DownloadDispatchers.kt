@@ -16,18 +16,21 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
 
         DownloadTask(downloadReq, httpClient).run(
             onStart = {
-                executeOnMainThread { downloadReq.onStart() }
+                executeOnMainThread { downloadReq.onStart(it) }
             },
-            onProgress = { executeOnMainThread { downloadReq.onProgress(it) } },
-            onPause = { executeOnMainThread { downloadReq.onPause() } },
-            onError = { executeOnMainThread { downloadReq.onError(it) } },
-            onCancel = { executeOnMainThread { downloadReq.onCancel() } },
+            onProgress = { id,value->
+                executeOnMainThread { downloadReq.onProgress(id,value) } },
+            onPause = {
+                executeOnMainThread { downloadReq.onPause(it) } },
+            onError = {id,value->
+                executeOnMainThread { downloadReq.onError(id,value) } },
+            onCancel = { executeOnMainThread { downloadReq.onCancel(it) } },
             onComplete = {
-                executeOnMainThread { downloadReq.onComplete() }
+                executeOnMainThread { downloadReq.onComplete(it) }
             },
-            onResume = {
+            onResume = {id,value->
                 executeOnMainThread {
-                    downloadReq.onResume(downloadReq.totalBytes)
+                    downloadReq.onResume(id,value)
                 }
             }
 
@@ -61,7 +64,7 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
 
     fun cancel(request: DownloadRequest) {
         if (request.state == DownloadStates.STATUS_PAUSED) {
-            request.onCancel.invoke()
+            request.onCancel.invoke(request.downloadId)
         } else {
             request.state = DownloadStates.STATUS_FAILED
             request.job.cancel()
@@ -70,7 +73,7 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
 
     fun pause(request: DownloadRequest) {
         if (request.state == DownloadStates.STATUS_FAILED) {
-            request.onPause.invoke()
+            request.onPause.invoke(request.downloadId)
         } else {
             request.state = DownloadStates.STATUS_PAUSED
             request.job.cancel()

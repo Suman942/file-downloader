@@ -44,13 +44,13 @@ class DownloadRequest private constructor(
     internal var downloadedBytes: Long = 0
     internal var lastModified : Long = System.currentTimeMillis()
     internal lateinit var job: Job
-    internal  var onStart: () -> Unit = {}
-    internal  var onProgress: (value: Int) -> Unit = {}
-    internal  var onPause: () -> Unit = {}
-    internal var onResume: (value: Long) -> Unit = {}
-    internal  var onCancel: () -> Unit = {}
-    internal  var onComplete: () -> Unit = {}
-    internal  var onError: (error: String?) -> Unit = {}
+    internal  var onStart: (Int) -> Unit = {}
+    internal  var onProgress: (id:Int,value: Int) -> Unit = {_,_->}
+    internal  var onPause: (Int) -> Unit = {}
+    internal var onResume: (id: Int,value: Long) -> Unit = {_,_ ->}
+    internal  var onCancel: (id:Int) -> Unit = {}
+    internal  var onComplete: (Int) -> Unit = {}
+    internal  var onError: (id: Int,error: String?) -> Unit = {_,_ ->}
     internal var state = -1
 
     data class Builder(

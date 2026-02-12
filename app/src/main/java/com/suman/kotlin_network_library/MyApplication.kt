@@ -7,12 +7,12 @@ import com.suman.kotlin_network_library.di.module.ApplicationModule
 import com.suman.network_library.Downloader
 
 class MyApplication: Application() {
-    lateinit var downloader:Downloader
+//    lateinit var downloader:Downloader
     lateinit var applicationComponent: ApplicationComponent
     override fun onCreate() {
         super.onCreate()
         getDependencies()
-        downloader= Downloader.create(this)
+//        downloader= Downloader.create(this)
     }
 
     private fun getDependencies(){
