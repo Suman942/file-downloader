@@ -9,5 +9,5 @@ data class DownloadUiModel(
 )
 
 enum class DownloadStatus {
-    IDLE, DOWNLOADING, PAUSED, COMPLETED, CANCELLED, ERROR
+    IDLE, DOWNLOADING,PROGRESS ,PAUSED, COMPLETED, CANCELLED, ERROR
 }

@@ -2,30 +2,34 @@ package com.suman.kotlin_network_library
 
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.suman.kotlin_network_library.databinding.ActivityMainBinding
 import com.suman.kotlin_network_library.di.component.DaggerActivityComponent
 import com.suman.kotlin_network_library.di.module.ActivityModule
 import com.suman.network_library.Downloader
 import com.suman.network_library.internal.DownloadRequest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     @Inject lateinit var downloadAdapter: DownloadAdapter
     private lateinit var binding: ActivityMainBinding
 //    @Inject lateinit var downloader: Downloader
-    private lateinit var request: DownloadRequest
-    private lateinit var request2: DownloadRequest
-    private val downloadsPath =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-    private var currentDownloadId: Int? = null
-    private var currentDownloadId2: Int? = null
+//    private lateinit var request: DownloadRequest
+//    private lateinit var request2: DownloadRequest
+//    private val downloadsPath =
+//        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+//    private var currentDownloadId: Int? = null
+//    private var currentDownloadId2: Int? = null
     private lateinit var viewModel: MainViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         initialise()
 
         downloadAdapter.onDownload = { url, fileName ->
+            Log.d("TAG","start download")
             viewModel.startDownload(url, fileName)
         }
 
@@ -65,10 +70,14 @@ class MainActivity : AppCompatActivity() {
             viewModel.resumeDownload(id)
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.downloads.collect {
-                downloadAdapter.submitList(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.downloads.collect {
+                    Log.d("MainActivity","observer: ${it.isEmpty()}")
+                    downloadAdapter.submitList(it)
+                }
             }
+
         }
 
     }

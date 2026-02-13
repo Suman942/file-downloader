@@ -1,5 +1,6 @@
 package com.suman.kotlin_network_library
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -16,6 +17,7 @@ class MainViewModel @Inject constructor(private val repository: DownloadReposito
      * Start a new download
      */
     fun startDownload(url: String, fileName: String) {
+        Log.d("TAG","start download view model")
         repository.start(url, fileName)
     }
 

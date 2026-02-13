@@ -1,5 +1,6 @@
 package com.suman.kotlin_network_library
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -40,13 +41,21 @@ class DownloadAdapter :
 //            fileNameTxt.text = item.fileName
 //            progressBar.progress = item.progress
 //            progressTxt.text = "${item.progress}%"
+            Log.d("MainActivity","adapter: ${item.status} ${item.progress}")
 
             when (item.status) {
                 DownloadStatus.IDLE->{
-
+                    downloadBtn1.setOnClickListener {
+                        onDownload(item.url,"${System.currentTimeMillis()}")
+                    }
+                }
+                DownloadStatus.PROGRESS->{
+                    textViewStatus1.text = "Downloading"
+                    progressBar1.progress = item.progress
                 }
                 DownloadStatus.DOWNLOADING -> {
-                    downloadBtn1.text = "Pause"
+                    downloadBtn1.text = "Downloading"
+                    textViewStatus1.text = "Downloading"
                     downloadBtn1.isEnabled = true
                     downloadBtn1.setOnClickListener {
                         onPause(item.id)
@@ -54,7 +63,8 @@ class DownloadAdapter :
                 }
 
                 DownloadStatus.PAUSED -> {
-                    downloadBtn1.text = "Resume"
+//                    downloadBtn1.text = "Resume"
+                    textViewStatus1.text = "Paused"
                     downloadBtn1.isEnabled = true
                     downloadBtn1.setOnClickListener {
                         onResume(item.id)
@@ -62,7 +72,10 @@ class DownloadAdapter :
                 }
 
                 DownloadStatus.COMPLETED -> {
-                    downloadBtn1.text = "Completed"
+                    downloadBtn1.text = "Downloaded"
+                    textViewStatus1.text = "Downloaded"
+                    progressBar1.progress = item.progress
+                    textViewProgress1.text = "${item.progress}%"
                     downloadBtn1.isEnabled = false
                 }
 
@@ -74,6 +87,7 @@ class DownloadAdapter :
                         onDownload(item.url, item.fileName)
                     }
                 }
+
             }
 
             cancelBtn1.setOnClickListener {
