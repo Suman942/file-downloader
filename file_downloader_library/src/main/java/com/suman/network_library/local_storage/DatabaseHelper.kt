@@ -66,7 +66,7 @@ internal class DatabaseHelper private constructor(private val dbHelper: SQLiteOp
         }
     }
 
-    fun updateProgress(id: Int, downloadedBytes: Long, status: Int? = null, totalBytes: Long) {
+    fun updateProgress(id: Int, downloadedBytes: Long, status: Int? = null, totalBytes: Long,error: String?=null) {
         val values = ContentValues().apply {
             put("downloaded_bytes", downloadedBytes)
             status?.let {
@@ -74,6 +74,7 @@ internal class DatabaseHelper private constructor(private val dbHelper: SQLiteOp
             }
             put("updated_at", System.currentTimeMillis())
             put("total_bytes", totalBytes)
+            put("error",error)
         }
         writableDb.update(
             "downloads",

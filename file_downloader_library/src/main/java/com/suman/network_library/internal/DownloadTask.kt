@@ -44,7 +44,6 @@ class DownloadTask(
                     downloadRequest.downloadedBytes = read
                     if (total > 0) {
                         val progress = ((read * 100) / total).toInt()
-                        Log.d("DownloadTask","progress:${progress} -- ${downloadRequest.downloadId}")
 
                         if (progress > lastSavedProgress) {
                             lastSavedProgress = progress
@@ -99,19 +98,22 @@ class DownloadTask(
                 }
 
             } catch (e: Exception) {
-                Log.d("DownloadTask","${e.message}")
+                Log.d("DownloadTask","error: ${e.message}\n ${downloadRequest.downloadId}")
                 onError(downloadRequest.downloadId, e.message)
+                updateRequest(downloadRequest.downloadId, DownloadStates.STATUS_FAILED,downloadRequest.downloadedBytes,
+                    downloadRequest.totalBytes,e.message)
             }
 
         }
     }
 
-    private fun updateRequest(id: Int, status: Int, downloadedBytes: Long, totalBytes: Long) {
+    private fun updateRequest(id: Int, status: Int, downloadedBytes: Long, totalBytes: Long,error: String?=null) {
         databaseHelper.updateProgress(
             id = id,
             status = status,
             downloadedBytes = downloadedBytes,
-            totalBytes = totalBytes
+            totalBytes = totalBytes,
+            error = error
         )
     }
 
