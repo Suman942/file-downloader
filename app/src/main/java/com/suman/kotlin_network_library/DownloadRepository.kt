@@ -6,6 +6,7 @@ import com.suman.network_library.Downloader
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,6 +14,22 @@ import javax.inject.Singleton
 class DownloadRepository @Inject constructor(private val downloader: Downloader) {
     private val TAG = "DownloadRepository"
     private val activeDownloads = mutableMapOf<Int, DownloadUiModel>()
+
+    private fun getDirectoryPath(): String{
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS
+        )
+
+        val appFolder = File(downloadsDir, "MyApp")
+
+        if (!appFolder.exists()) {
+            appFolder.mkdirs()
+        }
+
+        val directoryPath = appFolder.absolutePath
+        return directoryPath
+
+    }
 
 
     // Default download list
@@ -38,11 +55,11 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
         _downloads.asStateFlow()
 
     fun start(url: String, fileName: String) {
-        Log.d(TAG,"start download")
+        Log.d(TAG,"start download: ")
         val request = downloader
             .newReqBuilder(
                 url,
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+                getDirectoryPath(),
                 fileName
             )
             .build()

@@ -1,6 +1,8 @@
 package com.suman.network_library
 
+import android.util.Log
 import com.suman.network_library.internal.DownloadRequest
+import com.suman.network_library.internal.Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -42,8 +44,13 @@ class DefaultHttpClient : HttpClient {
                 throw Exception("HTTP error code: ${connection.responseCode}")
             }
 
-            val file = File(downloadRequest.dirPath, downloadRequest.fileName)
-            
+            val hasExtension = Util.hasExtension(downloadRequest.fileName)
+            val fileName = if (hasExtension) downloadRequest.fileName else{
+                Util.detectFileName(downloadRequest.url,connection,downloadRequest.fileName)
+            }
+
+            val file = File(downloadRequest.dirPath, fileName)
+
             // Server ignored Range → restart
             if (
                 downloadRequest.downloadedBytes > 0 &&

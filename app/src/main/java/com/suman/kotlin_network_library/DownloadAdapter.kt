@@ -84,7 +84,7 @@ class DownloadAdapter :
             }
 
             downloadBtn1.setOnClickListener {
-                onDownload(item.url,"${System.currentTimeMillis()}")
+                onDownload(item.url,"${item.fileName}")
             }
             cancelBtn1.setOnClickListener {
                 onCancel(item.id)
