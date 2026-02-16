@@ -58,7 +58,7 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
 
     fun enqueue(
         request: DownloadRequest,
-        onStart: (Int) -> Unit = {},
+        onStart: (Int) -> Unit = {_,->},
         onPause: (Int) -> Unit = {},
         onProgress: (Int, Int) -> Unit = { _, _ -> },
         onError: (Int, String?) -> Unit = { _, _ -> },

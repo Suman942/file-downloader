@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         downloadAdapter.onCancel = { id ->
-            viewModel.resumeDownload(id)
+            viewModel.cancelDownload(id)
         }
 
         lifecycleScope.launch {

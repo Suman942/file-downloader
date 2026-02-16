@@ -28,9 +28,9 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
             onComplete = {
                 executeOnMainThread { downloadReq.onComplete(it) }
             },
-            onResume = {id,value->
+            onResume = {id,downloadedBytes->
                 executeOnMainThread {
-                    downloadReq.onResume(id,value)
+                    downloadReq.onResume(id,downloadedBytes)
                 }
             }
 

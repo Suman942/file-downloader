@@ -16,20 +16,14 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
 
 
     // Default download list
-    private val defaultDownloads = listOf(
+    private val defaultDownloads = Data.imageUrls.mapIndexed { index, url ->
         DownloadUiModel(
-            id = 0,
-            url = Data.imageUrls[1],
-            fileName = "file1.jpg",
-            status = DownloadStatus.IDLE
-        ),
-//        DownloadUiModel(
-//            id = -2,
-//            url = "https://example.com/file2.mp4",
-//            fileName = "file2.mp4",
-//            status = DownloadStatus.IDLE
-//        )
-    )
+            id = -(index + 1),          // 👈 placeholder ID
+            url = url,
+            fileName = "download ${index}",
+            status = DownloadStatus.IDLE,
+        )
+    }
 
     init {
         // Populate activeDownloads with defaults
@@ -67,8 +61,9 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
                 Log.d(TAG,"download onPause")
                 updateStatus(id, DownloadStatus.PAUSED)
             },
-            onResume = { id, value ->
+            onResume = { id, downloadedBytes ->
                 Log.d(TAG,"download onResume")
+//                updateResume(id,downloadedBytes,DownloadStatus.RESUME)
                 updateStatus(id, DownloadStatus.DOWNLOADING)
             },
             onCancel = { id ->
@@ -86,19 +81,17 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
         )
 
         val existing = activeDownloads.values.find { it.url == url }
-        if (existing != null && existing.id == 0) {
-            // Replace the placeholder ID with real download ID
+
+        if (existing != null) {
             activeDownloads.remove(existing.id)
-            activeDownloads[id] = existing.copy(id = id, status = DownloadStatus.DOWNLOADING)
-        } else {
-            // New download, just add it
-            activeDownloads[id] = DownloadUiModel(
-                id = id,
-                url = url,
-                fileName = fileName,
-                status = DownloadStatus.DOWNLOADING
-            )
+            activeDownloads[id] =
+                existing.copy(
+                    id = id,
+                    status = DownloadStatus.DOWNLOADING,
+                    progress = 0
+                )
         }
+
 
         emit()
     }
@@ -113,6 +106,8 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
             emit()
         }
     }
+
+
 
     private fun updateStatus(id: Int, status: DownloadStatus) {
         activeDownloads[id]?.let {

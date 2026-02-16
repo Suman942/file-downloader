@@ -1,5 +1,6 @@
 package com.suman.network_library.internal
 
+import android.util.Log
 import com.suman.network_library.HttpClient
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadEntity
@@ -20,7 +21,7 @@ class DownloadTask(
         onProgress: (id: Int, value: Int) -> Unit = { _, _ -> },
         onError: (id: Int, error: String?) -> Unit = { _, _ -> },
         onCancel: (Int) -> Unit = {},
-        onResume: (id: Int, value: Long) -> Unit = { _, _ -> }
+        onResume: (id: Int, downloadedBytes: Long) -> Unit = { _, _ -> }
     ) {
         withContext(Dispatchers.IO) {
             try {
@@ -29,8 +30,11 @@ class DownloadTask(
                 insertRequest()
 
                 if (isResume) {
+                    Log.d("DownloadTask","resuming download")
                     onResume(downloadRequest.downloadId, downloadRequest.downloadedBytes)
                 } else {
+                    Log.d("DownloadTask","starting download")
+
                     onStart(downloadRequest.downloadId)
                 }
                 var lastSavedProgress = -1
@@ -40,10 +44,11 @@ class DownloadTask(
                     downloadRequest.downloadedBytes = read
                     if (total > 0) {
                         val progress = ((read * 100) / total).toInt()
-                        onProgress(downloadRequest.downloadId, progress)
+                        Log.d("DownloadTask","progress:${progress} -- ${downloadRequest.downloadId}")
+
                         if (progress > lastSavedProgress) {
                             lastSavedProgress = progress
-
+                            onProgress(downloadRequest.downloadId, progress)
                             updateRequest(
                                 downloadRequest.downloadId,
                                 DownloadStates.STATUS_DOWNLOADING,
@@ -94,6 +99,7 @@ class DownloadTask(
                 }
 
             } catch (e: Exception) {
+                Log.d("DownloadTask","${e.message}")
                 onError(downloadRequest.downloadId, e.message)
             }
 

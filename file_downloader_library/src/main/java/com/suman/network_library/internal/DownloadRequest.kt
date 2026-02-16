@@ -47,7 +47,7 @@ class DownloadRequest private constructor(
     internal  var onStart: (Int) -> Unit = {}
     internal  var onProgress: (id:Int,value: Int) -> Unit = {_,_->}
     internal  var onPause: (Int) -> Unit = {}
-    internal var onResume: (id: Int,value: Long) -> Unit = {_,_ ->}
+    internal var onResume: (id: Int,downloadedBytes: Long) -> Unit = { _,_ ->}
     internal  var onCancel: (id:Int) -> Unit = {}
     internal  var onComplete: (Int) -> Unit = {}
     internal  var onError: (id: Int,error: String?) -> Unit = {_,_ ->}

@@ -43,55 +43,57 @@ class DownloadAdapter :
 //            progressTxt.text = "${item.progress}%"
             Log.d("MainActivity","adapter: ${item.status} ${item.progress}")
 
+            textViewTitle1.text = item.fileName
             when (item.status) {
                 DownloadStatus.IDLE->{
-                    downloadBtn1.setOnClickListener {
-                        onDownload(item.url,"${System.currentTimeMillis()}")
-                    }
+
                 }
                 DownloadStatus.PROGRESS->{
                     textViewStatus1.text = "Downloading"
+                    textViewProgress1.text = "Progress: ${item.progress}%"
                     progressBar1.progress = item.progress
                 }
                 DownloadStatus.DOWNLOADING -> {
-                    downloadBtn1.text = "Downloading"
                     textViewStatus1.text = "Downloading"
                     downloadBtn1.isEnabled = true
-                    downloadBtn1.setOnClickListener {
-                        onPause(item.id)
-                    }
                 }
 
                 DownloadStatus.PAUSED -> {
-//                    downloadBtn1.text = "Resume"
                     textViewStatus1.text = "Paused"
                     downloadBtn1.isEnabled = true
-                    downloadBtn1.setOnClickListener {
-                        onResume(item.id)
-                    }
+                }
+
+                DownloadStatus.RESUME ->{
+                    textViewStatus1.text = "Resume"
+                    downloadBtn1.isEnabled = false
                 }
 
                 DownloadStatus.COMPLETED -> {
-                    downloadBtn1.text = "Downloaded"
                     textViewStatus1.text = "Downloaded"
                     progressBar1.progress = item.progress
-                    textViewProgress1.text = "${item.progress}%"
-                    downloadBtn1.isEnabled = false
+                    textViewProgress1.text = "Progress: ${item.progress}%"
                 }
 
                 DownloadStatus.CANCELLED,
                 DownloadStatus.ERROR -> {
-                    downloadBtn1.text = "Retry"
+                    textViewStatus1.text = "Error"
                     downloadBtn1.isEnabled = true
-                    downloadBtn1.setOnClickListener {
-                        onDownload(item.url, item.fileName)
-                    }
+
                 }
 
             }
 
+            downloadBtn1.setOnClickListener {
+                onDownload(item.url,"${System.currentTimeMillis()}")
+            }
             cancelBtn1.setOnClickListener {
                 onCancel(item.id)
+            }
+            pauseBtn1.setOnClickListener {
+                onPause(item.id)
+            }
+            resumeBtn1.setOnClickListener {
+                onResume(item.id)
             }
         }
     }
