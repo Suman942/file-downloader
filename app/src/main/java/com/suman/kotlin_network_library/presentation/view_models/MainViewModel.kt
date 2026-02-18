@@ -1,7 +1,9 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.presentation.view_models
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.suman.kotlin_network_library.data.DownloadRepository
+import com.suman.kotlin_network_library.domain.DownloadUiModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 

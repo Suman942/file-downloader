@@ -42,15 +42,15 @@ class DownloadRequest private constructor(
 
     internal var totalBytes: Long = 0
     internal var downloadedBytes: Long = 0
-    internal var lastModified : Long = System.currentTimeMillis()
+    internal var lastModified: Long = System.currentTimeMillis()
     internal lateinit var job: Job
-    internal  var onStart: (Int) -> Unit = {}
-    internal  var onProgress: (id:Int,value: Int) -> Unit = {_,_->}
-    internal  var onPause: (Int) -> Unit = {}
-    internal var onResume: (id: Int,downloadedBytes: Long) -> Unit = { _,_ ->}
-    internal  var onCancel: (id:Int) -> Unit = {}
-    internal  var onComplete: (Int) -> Unit = {}
-    internal  var onError: (id: Int,error: String?) -> Unit = {_,_ ->}
+    internal var onStart: (Int) -> Unit = {}
+    internal var onProgress: (id: Int, value: Int) -> Unit = { _, _ -> }
+    internal var onPause: (Int) -> Unit = {}
+    internal var onResume: (id: Int, downloadedBytes: Long) -> Unit = { _, _ -> }
+    internal var onCancel: (id: Int) -> Unit = {}
+    internal var onComplete: (Int) -> Unit = {}
+    internal var onError: (id: Int, error: String?) -> Unit = { _, _ -> }
     internal var state = -1
 
     data class Builder(
@@ -62,7 +62,7 @@ class DownloadRequest private constructor(
         private var readTimeOut: Int = 0
         private var connectTimeOut: Int = 0
 
-//        fun setTag(tag: String): Builder{
+        //        fun setTag(tag: String): Builder{
 //            this.tag = tag
 //            return this
 //        }
@@ -79,15 +79,31 @@ class DownloadRequest private constructor(
             this.connectTimeOut = timeout
         }
 
-        fun build(): DownloadRequest = DownloadRequest(
-            url = url,
-            tag = tag,
-            dirPath = dirPath,
-            downloadId = getUniqueId(url,dirPath,fileName),
-            fileName =fileName,
-            readTimeOut = readTimeOut,
-            connectTimeOut = connectTimeOut
-        )
+        fun build(): DownloadRequest {
+            require(url.isNotBlank()) { "URL cannot be empty" }
+            val parsedURl = try {
+                java.net.URL(url)
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Invalid URL: $url")
+            }
+
+            require(
+                parsedURl.protocol.equals("http", ignoreCase = true) ||
+                        parsedURl.protocol.equals("https", ignoreCase = true)
+            ) {
+                "Only HTTP and HTTPS URLs are supported"
+            }
+
+            return DownloadRequest(
+                url = url,
+                tag = tag,
+                dirPath = dirPath,
+                downloadId = getUniqueId(url, dirPath, fileName),
+                fileName = fileName,
+                readTimeOut = readTimeOut,
+                connectTimeOut = connectTimeOut
+            )
+        }
     }
 }
 

@@ -1,7 +1,9 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.data
 
 import android.os.Environment
 import android.util.Log
+import com.suman.kotlin_network_library.domain.DownloadStatus
+import com.suman.kotlin_network_library.domain.DownloadUiModel
 import com.suman.network_library.Downloader
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +35,7 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
 
 
     // Default download list
-    private val defaultDownloads = Data.imageUrls.mapIndexed { index, url ->
+    private val defaultDownloads = Utils.imageUrls.mapIndexed { index, url ->
         DownloadUiModel(
             id = -(index + 1),          // 👈 placeholder ID
             url = url,

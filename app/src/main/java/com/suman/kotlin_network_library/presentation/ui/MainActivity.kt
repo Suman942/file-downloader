@@ -1,7 +1,6 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.presentation.ui
 
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,16 +11,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.suman.kotlin_network_library.presentation.adapter.DownloadAdapter
+import com.suman.kotlin_network_library.presentation.view_models.MainViewModel
+import com.suman.kotlin_network_library.MyApplication
+import com.suman.kotlin_network_library.R
 import com.suman.kotlin_network_library.databinding.ActivityMainBinding
 import com.suman.kotlin_network_library.di.component.DaggerActivityComponent
 import com.suman.kotlin_network_library.di.module.ActivityModule
-import com.suman.network_library.Downloader
-import com.suman.network_library.internal.DownloadRequest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
-    @Inject lateinit var downloadAdapter: DownloadAdapter
+    @Inject
+    lateinit var downloadAdapter: DownloadAdapter
     private lateinit var binding: ActivityMainBinding
 //    @Inject lateinit var downloader: Downloader
 //    private lateinit var request: DownloadRequest

@@ -3,7 +3,7 @@
 <data>
     <variable
         name="item"
-        type="com.suman.kotlin_network_library.DownloadUiModel" />
+        type="com.suman.kotlin_network_library.domain.DownloadUiModel" />
 </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/downloadGroup1"

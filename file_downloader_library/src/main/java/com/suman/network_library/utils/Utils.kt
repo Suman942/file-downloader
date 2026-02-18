@@ -1,7 +1,9 @@
 package com.suman.network_library.utils
 
+import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.UnsupportedEncodingException
+import java.net.HttpURLConnection
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and
@@ -28,4 +30,7 @@ fun getUniqueId(url: String, dirPath: String, fileName: String): Int {
     return hex.toString().hashCode()
 
 }
+
+
+
 

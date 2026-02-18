@@ -1,6 +1,6 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.data
 
-object Data {
+object Utils {
 
      val imageUrls = mutableListOf<String>(
          "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",

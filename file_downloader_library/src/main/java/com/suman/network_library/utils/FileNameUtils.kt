@@ -1,9 +1,10 @@
-package com.suman.network_library.internal
+package com.suman.network_library.utils
 
 import android.webkit.MimeTypeMap
 import java.net.HttpURLConnection
 
-internal object Util {
+internal object FileNameUtils {
+
 
     fun detectFileName(
         url: String,
@@ -41,9 +42,33 @@ internal object Util {
         return "$baseName.bin"
     }
 
+
+    private val allowedExtensions = setOf(
+        "jpg","jpeg","png","webp","gif",
+        "mp4","mkv","avi","mov",
+        "mp3","wav","aac",
+        "pdf","doc","docx","xls","xlsx",
+        "ppt","pptx","zip","rar","apk"
+    )
+
     fun hasExtension(fileName: String): Boolean {
-        val extension = fileName.substringAfterLast('.', "")
-        return extension.isNotEmpty() && extension.length <= 10
+        val extension = getExtension(fileName)?.lowercase() ?: return false
+        return extension in allowedExtensions
+    }
+
+    fun getExtension(fileName: String): String? {
+        val cleanName = fileName
+            .substringBefore('?')      // remove query params
+            .substringBefore('#')      // remove fragments
+
+        val lastDot = cleanName.lastIndexOf('.')
+
+        // No dot OR dot is first char (.nomedia) OR dot is last char (file.)
+        if (lastDot <= 0 || lastDot == cleanName.length - 1) {
+            return null
+        }
+
+        return cleanName.substring(lastDot + 1).lowercase()
     }
 
 

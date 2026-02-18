@@ -1,4 +1,4 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.presentation.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.suman.kotlin_network_library.databinding.DownloadItemLayoutBinding
 import com.suman.kotlin_network_library.di.ActivityScope
+import com.suman.kotlin_network_library.domain.DownloadStatus
+import com.suman.kotlin_network_library.domain.DownloadUiModel
+
 @ActivityScope
 class DownloadAdapter :
     ListAdapter<DownloadUiModel, DownloadAdapter.ViewHolder>(DiffCallback) {

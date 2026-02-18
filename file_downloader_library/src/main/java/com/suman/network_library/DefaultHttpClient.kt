@@ -1,8 +1,8 @@
 package com.suman.network_library
 
-import android.util.Log
 import com.suman.network_library.internal.DownloadRequest
-import com.suman.network_library.internal.Util
+import com.suman.network_library.utils.FileNameUtils.detectFileName
+import com.suman.network_library.utils.FileNameUtils.hasExtension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -30,8 +30,8 @@ class DefaultHttpClient : HttpClient {
                 doInput = true
 
                 // resume support
-                if (downloadRequest.downloadedBytes > 0){
-                    setRequestProperty("Range","bytes=${downloadRequest.downloadedBytes}-")
+                if (downloadRequest.downloadedBytes > 0) {
+                    setRequestProperty("Range", "bytes=${downloadRequest.downloadedBytes}-")
                 }
 
                 connect()
@@ -44,9 +44,9 @@ class DefaultHttpClient : HttpClient {
                 throw Exception("HTTP error code: ${connection.responseCode}")
             }
 
-            val hasExtension = Util.hasExtension(downloadRequest.fileName)
-            val fileName = if (hasExtension) downloadRequest.fileName else{
-                Util.detectFileName(downloadRequest.url,connection,downloadRequest.fileName)
+            val hasExtension = hasExtension(downloadRequest.fileName)
+            val fileName = if (hasExtension) downloadRequest.fileName else {
+                detectFileName(downloadRequest.url, connection, downloadRequest.fileName)
             }
 
             val file = File(downloadRequest.dirPath, fileName)
@@ -60,16 +60,22 @@ class DefaultHttpClient : HttpClient {
                 file.delete()
             }
 
-            val totalBytes = if (connection.responseCode == HttpURLConnection.HTTP_PARTIAL){
+            val totalBytes = if (connection.responseCode == HttpURLConnection.HTTP_PARTIAL) {
                 downloadRequest.downloadedBytes + contentLength
-            }else{
+            } else {
                 contentLength
             }
             downloadRequest.totalBytes
 
             connection.inputStream.use { inputStream ->
                 file.outputStream().use { outputStream ->
-                    copyInputStreamProgress(inputStream, outputStream, downloadRequest.downloadedBytes,totalBytes.toLong(), onBytes)
+                    copyInputStreamProgress(
+                        inputStream,
+                        outputStream,
+                        downloadRequest.downloadedBytes,
+                        totalBytes.toLong(),
+                        onBytes
+                    )
                 }
             }
 

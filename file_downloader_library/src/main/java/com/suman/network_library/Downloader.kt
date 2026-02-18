@@ -5,7 +5,6 @@ import android.util.Log
 import com.suman.network_library.internal.DownloadDispatchers
 import com.suman.network_library.internal.DownloadRequest
 import com.suman.network_library.internal.DownloadRequestQueue
-import com.suman.network_library.internal.Util
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadStates
 

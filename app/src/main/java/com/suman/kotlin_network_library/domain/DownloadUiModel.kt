@@ -1,4 +1,4 @@
-package com.suman.kotlin_network_library
+package com.suman.kotlin_network_library.domain
 
 data class DownloadUiModel(
     val id: Int,
