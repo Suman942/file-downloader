@@ -5,6 +5,7 @@ import android.util.Log
 import com.suman.network_library.internal.DownloadDispatchers
 import com.suman.network_library.internal.DownloadRequest
 import com.suman.network_library.internal.DownloadRequestQueue
+import com.suman.network_library.internal.NetworkMonitor
 import com.suman.network_library.local_storage.DatabaseHelper
 import com.suman.network_library.local_storage.DownloadStates
 
@@ -21,14 +22,28 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
             return instance ?: synchronized(this) {
                 instance ?: run {
                     DatabaseHelper.initialise(context)
-                    Downloader(downloaderConfig).also {
-                        instance = it
-                        it.resumePendingDownloads()
-                        it
-                    }
+                    val downloader = Downloader(downloaderConfig)
+                    instance = downloader
+                    downloader.resumePendingDownloads()
+                    downloader.startNetworkMonitor(context)
+                    downloader
+//                    Downloader(downloaderConfig).also {
+//                        instance = it
+//                        it.resumePendingDownloads()
+//                        it
+//                    }
                 }
             }
         }
+    }
+
+    private fun startNetworkMonitor(context: Context) {
+
+        NetworkMonitor(context) {
+            Log.d("Downloader", "Network restored → resuming downloads")
+//            resumeNetworkPausedDownloads()
+            resumePendingDownloads()
+        }.register()
     }
 
     private fun resumePendingDownloads() {
@@ -36,9 +51,10 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
             .getPendingDownloads()
 
         pending.forEach {
-            val request = DownloadRequest.fromEntity(entity = it
-            , config = downloaderConfig)
-            if (request.state == DownloadStates.STATUS_PAUSED){
+            val request = DownloadRequest.fromEntity(
+                entity = it, config = downloaderConfig
+            )
+            if (request.state == DownloadStates.STATUS_PAUSED) {
                 DatabaseHelper.getInstance().deleteDownload(request.downloadId)
             }
             requestQueue.enqueue(
@@ -48,8 +64,11 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
     }
 
 
-    private val requestQueue =
+    //    private val requestQueue =
+//        DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
+    private val requestQueue by lazy {
         DownloadRequestQueue(DownloadDispatchers(downloaderConfig.httpClient))
+    }
 
     fun newReqBuilder(url: String, dirPath: String, fileName: String): DownloadRequest.Builder {
         return DownloadRequest.Builder(url, dirPath, fileName)
@@ -59,7 +78,7 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
 
     fun enqueue(
         request: DownloadRequest,
-        onStart: (Int) -> Unit = {_,->},
+        onStart: (Int) -> Unit = { _ -> },
         onPause: (Int) -> Unit = {},
         onProgress: (Int, Int) -> Unit = { _, _ -> },
         onError: (Int, String?) -> Unit = { _, _ -> },

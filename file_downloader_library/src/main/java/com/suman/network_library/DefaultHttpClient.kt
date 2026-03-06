@@ -1,5 +1,6 @@
 package com.suman.network_library
 
+import android.util.Log
 import com.suman.network_library.internal.DownloadRequest
 import com.suman.network_library.utils.FileNameUtils.detectFileName
 import com.suman.network_library.utils.FileNameUtils.hasExtension
@@ -48,6 +49,7 @@ class DefaultHttpClient : HttpClient {
             val fileName = if (hasExtension) downloadRequest.fileName else {
                 detectFileName(downloadRequest.url, connection, downloadRequest.fileName)
             }
+            Log.d("DownloadRepository","extension:$fileName")
 
             val file = File(downloadRequest.dirPath, fileName)
 
