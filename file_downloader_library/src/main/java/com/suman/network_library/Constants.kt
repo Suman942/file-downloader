@@ -1,6 +1,6 @@
 package com.suman.network_library
 
 object Constants {
-    const val DEFAULT_READ_TIMEOUT_MILLIS = 200000
-    const val DEFAULT_CONNECT_TIMEOUT_MILLIS = 200000
+    const val DEFAULT_READ_TIMEOUT_MILLIS = 60_000
+    const val DEFAULT_CONNECT_TIMEOUT_MILLIS = 15_000
 }

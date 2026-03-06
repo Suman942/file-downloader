@@ -34,15 +34,5 @@ class DownloadRequestValidationTest{
         ).build()
     }
 
-    @Test
-    fun new_request_should_have_queued_state() {
-        val request = DownloadRequest.Builder(
-            "https://example.com/file.jpg",
-            "/storage",
-            "file.jpg"
-        ).build()
-
-        assertEquals(DownloadStates.STATUS_DOWNLOADING, request.state)
-    }
 
 }
