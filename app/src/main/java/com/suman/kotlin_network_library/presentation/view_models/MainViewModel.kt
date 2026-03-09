@@ -19,7 +19,6 @@ class MainViewModel @Inject constructor(private val repository: DownloadReposito
      * Start a new download
      */
     fun startDownload(url: String, fileName: String) {
-        Log.d("TAG","start download view model")
         repository.start(url, fileName)
     }
 

@@ -40,7 +40,6 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
     private fun startNetworkMonitor(context: Context) {
 
         NetworkMonitor(context) {
-            Log.d("Downloader", "Network restored → resuming downloads")
 //            resumeNetworkPausedDownloads()
             resumePendingDownloads()
         }.register()

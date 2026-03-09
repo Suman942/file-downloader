@@ -49,7 +49,6 @@ class DefaultHttpClient : HttpClient {
             val fileName = if (hasExtension) downloadRequest.fileName else {
                 detectFileName(downloadRequest.url, connection, downloadRequest.fileName)
             }
-            Log.d("DownloadRepository","extension:$fileName")
 
             val file = File(downloadRequest.dirPath, fileName)
 

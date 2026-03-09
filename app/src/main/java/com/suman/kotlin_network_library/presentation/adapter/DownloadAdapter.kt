@@ -44,7 +44,6 @@ class DownloadAdapter :
 //            fileNameTxt.text = item.fileName
 //            progressBar.progress = item.progress
 //            progressTxt.text = "${item.progress}%"
-            Log.d("MainActivity","adapter: ${item.status} ${item.progress}")
 
             textViewTitle1.text = item.fileName
             when (item.status) {

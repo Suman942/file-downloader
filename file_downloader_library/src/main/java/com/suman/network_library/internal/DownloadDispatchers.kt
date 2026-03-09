@@ -58,7 +58,6 @@ class DownloadDispatchers(private val httpClient: HttpClient) {
         }
         downloadReq.job = job
         downloadReq.state = DownloadStates.STATUS_DOWNLOADING
-        Log.d("DownloadProgress", "resume dispatchers: ${downloadReq.downloadedBytes}")
         return downloadReq.downloadId
     }
 

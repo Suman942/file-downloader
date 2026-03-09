@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.util.Log
 
 internal class NetworkMonitor(
     context: Context,
@@ -31,7 +30,6 @@ internal class NetworkMonitor(
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
-                    Log.d("Downloader", "Network lost → failed downloads")
 
                 }
             }

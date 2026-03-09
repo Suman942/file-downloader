@@ -22,7 +22,7 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
             Environment.DIRECTORY_DOWNLOADS
         )
 
-        val appFolder = File(downloadsDir, "MyApp")
+        val appFolder = File(downloadsDir, "Downloaded File")
 
         if (!appFolder.exists()) {
             appFolder.mkdirs()
@@ -57,7 +57,6 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
         _downloads.asStateFlow()
 
     fun start(url: String, fileName: String) {
-        Log.d(TAG,"start download: ")
         val request = downloader
             .newReqBuilder(
                 url,
@@ -69,32 +68,25 @@ class DownloadRepository @Inject constructor(private val downloader: Downloader)
         val id = downloader.enqueue(
             request,
             onStart = { id ->
-                Log.d(TAG,"download started")
                 updateStatus(id, DownloadStatus.DOWNLOADING)
             },
             onProgress = { id, value ->
-                Log.d(TAG,"download on progress : $value")
                 updateProgress(id, value, DownloadStatus.PROGRESS)
             },
             onPause = { id ->
-                Log.d(TAG,"download onPause")
                 updateStatus(id, DownloadStatus.PAUSED)
             },
             onResume = { id, downloadedBytes ->
-                Log.d(TAG,"download onResume")
 //                updateResume(id,downloadedBytes,DownloadStatus.RESUME)
                 updateStatus(id, DownloadStatus.DOWNLOADING)
             },
             onCancel = { id ->
-                Log.d(TAG,"download onCancel")
                 updateStatus(id, DownloadStatus.CANCELLED)
             },
             onComplete = { id ->
-                Log.d(TAG,"download onComplete")
                 updateStatus(id, DownloadStatus.COMPLETED)
             },
             onError = { id, value ->
-                Log.d(TAG,"download onError")
                 updateStatus(id, DownloadStatus.ERROR)
             }
         )

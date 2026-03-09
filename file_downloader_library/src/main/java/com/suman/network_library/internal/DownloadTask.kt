@@ -30,11 +30,8 @@ class DownloadTask(
                 insertRequest()
 
                 if (isResume) {
-                    Log.d("DownloadTask","resuming download")
                     onResume(downloadRequest.downloadId, downloadRequest.downloadedBytes)
                 } else {
-                    Log.d("DownloadTask","starting download")
-
                     onStart(downloadRequest.downloadId)
                 }
                 var lastSavedProgress = -1
@@ -98,7 +95,6 @@ class DownloadTask(
                 }
 
             } catch (e: Exception) {
-                Log.d("DownloadTask","error: ${e.message}\n ${downloadRequest.downloadId}")
                 onError(downloadRequest.downloadId, e.message)
                 updateRequest(downloadRequest.downloadId, DownloadStates.STATUS_FAILED,downloadRequest.downloadedBytes,
                     downloadRequest.totalBytes,e.message)

@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         initialise()
 
         downloadAdapter.onDownload = { url, fileName ->
-            Log.d("TAG","start download")
             viewModel.startDownload(url, fileName)
         }
 
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.downloads.collect {
-                    Log.d("MainActivity","observer: ${it.isEmpty()}")
                     downloadAdapter.submitList(it)
                 }
             }

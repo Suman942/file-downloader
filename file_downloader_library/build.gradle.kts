@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -42,4 +43,19 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.coroutines.core)
 
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+
+                groupId = "com.github.Suman942"
+                artifactId = "file-downloader"
+                version = "1.0.0"
+
+                from(components["release"])
+            }
+        }
+    }
 }
