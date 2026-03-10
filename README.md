@@ -57,6 +57,7 @@ file_downloader_library
 ```
 ## ⚙️ System Flow / Architecture
 
+```mermaid
 flowchart TD
 
 A[Application] --> B[Downloader.create]
@@ -67,13 +68,13 @@ C --> D[enqueue]
 
 D --> E[DownloadRequestQueue]
 
-E --> F[DownloadDispatchers<br>Manage Worker Threads]
+E --> F[DownloadDispatchers - Manage Worker Threads]
 
 F --> G[DownloadTask]
 
-G --> H[NetworkMonitor<br>Check Internet]
+G --> H[NetworkMonitor - Check Internet]
 
-H --> I[HttpURLConnection<br>Open Connection]
+H --> I[HttpURLConnection - Open Connection]
 
 I --> J[Read Input Stream]
 
@@ -89,7 +90,7 @@ M -- Yes --> N[Save Download State in DB]
 N --> O[Trigger onComplete Callback]
 
 O --> P[Update Application UI]
----
+```
 
 
 # 📦 Installation
