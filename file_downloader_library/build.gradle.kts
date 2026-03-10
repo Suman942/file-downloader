@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -52,7 +52,7 @@ afterEvaluate {
 
                 groupId = "com.github.Suman942"
                 artifactId = "file-downloader"
-                version = "1.0.0"
+                version = "1.0.2" // 1.0.1 already released so next would be 1.0.2
 
                 from(components["release"])
             }

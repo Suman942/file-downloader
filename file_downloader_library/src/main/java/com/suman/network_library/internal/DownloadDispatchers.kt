@@ -1,7 +1,7 @@
 package com.suman.network_library.internal
 
 import android.util.Log
-import com.suman.network_library.HttpClient
+import com.suman.network_library.network.HttpClient
 import com.suman.network_library.local_storage.DownloadStates
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
