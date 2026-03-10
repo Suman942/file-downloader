@@ -55,46 +55,6 @@ file_downloader_library
         ├── Downloader
         └── DownloaderConfig
 ```
-```
-
-## System Diagram / Workflow
-
-```mermaid
-flowchart TD
-
-A[Application] --> B[Create Downloader Instance]
-
-B --> C[Build DownloadRequest]
-C --> D[Enqueue Request]
-
-D --> E[DownloadRequestQueue]
-
-E --> F[DownloadDispatchers<br/>Manage Worker Threads]
-
-F --> G[DownloadTask Created]
-
-G --> H[Check Network Status<br/>NetworkMonitor]
-
-H --> I[Execute HTTP Request<br/>HttpClient]
-
-I --> J[Receive Data Stream]
-
-J --> K[Write Chunks to File System]
-
-K --> L[Update Progress Callback]
-
-L --> M{Download Finished?}
-
-M -- No --> J
-M -- Yes --> N[Mark Completed]
-
-N --> O[Save State to Local Storage DB]
-
-O --> P[Trigger onComplete Callback]
-
-P --> Q[Application UI Updated]
-```
----
 
 # 📦 Installation
 
