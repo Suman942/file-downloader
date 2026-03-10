@@ -55,6 +55,42 @@ file_downloader_library
         ├── Downloader
         └── DownloaderConfig
 ```
+## ⚙️ System Flow / Architecture
+
+flowchart TD
+
+A[Application] --> B[Downloader.create]
+
+B --> C[Build DownloadRequest]
+
+C --> D[enqueue]
+
+D --> E[DownloadRequestQueue]
+
+E --> F[DownloadDispatchers<br>Manage Worker Threads]
+
+F --> G[DownloadTask]
+
+G --> H[NetworkMonitor<br>Check Internet]
+
+H --> I[HttpURLConnection<br>Open Connection]
+
+I --> J[Read Input Stream]
+
+J --> K[Write File Chunks]
+
+K --> L[Progress Callback]
+
+L --> M{Download Complete?}
+
+M -- No --> J
+M -- Yes --> N[Save Download State in DB]
+
+N --> O[Trigger onComplete Callback]
+
+O --> P[Update Application UI]
+---
+
 
 # 📦 Installation
 
