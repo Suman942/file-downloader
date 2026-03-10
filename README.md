@@ -94,7 +94,7 @@ O --> P[Update Application UI]
 ## 🎥 Demo
 
 <p align="center">
-  <img src="screenshots/demo.gif" width="500"/>
+  <img src="screenshots/demo.gif" width="300"/>
 </p>
 
 # 📦 Installation
