@@ -62,10 +62,7 @@ class DownloadRequest private constructor(
         private var readTimeOut: Int = 0
         private var connectTimeOut: Int = 0
 
-        //        fun setTag(tag: String): Builder{
-//            this.tag = tag
-//            return this
-//        }
+
         // above code can be written as below
         fun setTag(tag: String) = apply {
             this.tag = tag

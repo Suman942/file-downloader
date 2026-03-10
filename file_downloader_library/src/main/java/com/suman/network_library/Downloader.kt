@@ -15,6 +15,7 @@ class Downloader private constructor(private val downloaderConfig: DownloaderCon
 
         @Volatile
         private var instance: Downloader? = null
+        @JvmOverloads
         fun create(
             context: Context,
             downloaderConfig: DownloaderConfig = DownloaderConfig()
