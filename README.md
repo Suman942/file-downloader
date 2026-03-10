@@ -91,7 +91,11 @@ N --> O[Trigger onComplete Callback]
 
 O --> P[Update Application UI]
 ```
+## 🎥 Demo
 
+<p align="center">
+  <img src="screenshots/demo.gif" width="500"/>
+</p>
 
 # 📦 Installation
 
