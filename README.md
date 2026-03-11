@@ -16,6 +16,7 @@ Supports **pause, resume, progress tracking, and multiple downloads** with a cle
 - **Resume support using HTTP Range headers**
 - **Lightweight – no heavy dependencies**
 - Works with **Kotlin and Java**
+- Works with Kotlin projects only ✅
 
 ---
 
