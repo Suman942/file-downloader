@@ -1,10 +1,9 @@
-package com.suman.network_library.internal
+package com.suman.downloader.internal
 
-import android.util.Log
-import com.suman.network_library.network.HttpClient
-import com.suman.network_library.local_storage.DatabaseHelper
-import com.suman.network_library.local_storage.DownloadEntity
-import com.suman.network_library.local_storage.DownloadStates
+import com.suman.downloader.network.HttpClient
+import com.suman.downloader.local_storage.DatabaseHelper
+import com.suman.downloader.local_storage.DownloadEntity
+import com.suman.downloader.local_storage.DownloadStates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException

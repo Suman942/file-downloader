@@ -1,6 +1,6 @@
-package com.suman.network_library.network
+package com.suman.downloader.network
 
-import com.suman.network_library.internal.DownloadRequest
+import com.suman.downloader.internal.DownloadRequest
 
 interface HttpClient {
 

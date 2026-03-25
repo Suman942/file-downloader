@@ -1,4 +1,4 @@
-package com.suman.network_library.internal
+package com.suman.downloader.internal
 
 import android.content.Context
 import android.net.ConnectivityManager

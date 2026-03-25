@@ -1,4 +1,4 @@
-package com.suman.network_library
+package com.suman.downloader
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

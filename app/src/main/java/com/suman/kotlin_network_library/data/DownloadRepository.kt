@@ -1,10 +1,9 @@
 package com.suman.kotlin_network_library.data
 
 import android.os.Environment
-import android.util.Log
 import com.suman.kotlin_network_library.domain.DownloadStatus
 import com.suman.kotlin_network_library.domain.DownloadUiModel
-import com.suman.network_library.Downloader
+import com.suman.downloader.Downloader
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

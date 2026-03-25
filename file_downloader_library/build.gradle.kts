@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.suman.network_library"
+    namespace = "com.suman.downloader"
     compileSdk = 35
 
     defaultConfig {

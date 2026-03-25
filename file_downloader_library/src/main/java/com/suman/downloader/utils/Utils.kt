@@ -1,9 +1,7 @@
-package com.suman.network_library.utils
+package com.suman.downloader.utils
 
-import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.UnsupportedEncodingException
-import java.net.HttpURLConnection
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and

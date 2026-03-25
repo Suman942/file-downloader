@@ -1,13 +1,12 @@
-package com.suman.network_library
+package com.suman.downloader
 
 import android.content.Context
-import android.util.Log
-import com.suman.network_library.internal.DownloadDispatchers
-import com.suman.network_library.internal.DownloadRequest
-import com.suman.network_library.internal.DownloadRequestQueue
-import com.suman.network_library.internal.NetworkMonitor
-import com.suman.network_library.local_storage.DatabaseHelper
-import com.suman.network_library.local_storage.DownloadStates
+import com.suman.downloader.internal.DownloadDispatchers
+import com.suman.downloader.internal.DownloadRequest
+import com.suman.downloader.internal.DownloadRequestQueue
+import com.suman.downloader.internal.NetworkMonitor
+import com.suman.downloader.local_storage.DatabaseHelper
+import com.suman.downloader.local_storage.DownloadStates
 
 class Downloader private constructor(private val downloaderConfig: DownloaderConfig) {
 

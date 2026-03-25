@@ -1,4 +1,4 @@
-package com.suman.network_library.utils
+package com.suman.downloader.utils
 
 import android.webkit.MimeTypeMap
 import java.net.HttpURLConnection

@@ -1,8 +1,8 @@
-package com.suman.network_library
+package com.suman.downloader
 
-import com.suman.network_library.network.DefaultHttpClient
-import com.suman.network_library.network.HttpClient
-import com.suman.network_library.utils.Constants
+import com.suman.downloader.network.DefaultHttpClient
+import com.suman.downloader.network.HttpClient
+import com.suman.downloader.utils.Constants
 
  data class DownloaderConfig(
      val httpClient: HttpClient = DefaultHttpClient(),

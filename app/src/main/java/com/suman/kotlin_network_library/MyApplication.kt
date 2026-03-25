@@ -4,7 +4,6 @@ import android.app.Application
 import com.suman.kotlin_network_library.di.component.ApplicationComponent
 import com.suman.kotlin_network_library.di.component.DaggerApplicationComponent
 import com.suman.kotlin_network_library.di.module.ApplicationModule
-import com.suman.network_library.Downloader
 
 class MyApplication: Application() {
 //    lateinit var downloader:Downloader

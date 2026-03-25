@@ -1,4 +1,4 @@
-package com.suman.network_library
+package com.suman.downloader
 
 import org.junit.Test
 

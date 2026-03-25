@@ -1,4 +1,4 @@
-package com.suman.network_library.local_storage
+package com.suman.downloader.local_storage
 
 internal object DownloadStates {
     const val STATUS_DOWNLOADING = 1

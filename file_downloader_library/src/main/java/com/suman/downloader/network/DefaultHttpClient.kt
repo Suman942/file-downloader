@@ -1,7 +1,7 @@
-package com.suman.network_library.network
+package com.suman.downloader.network
 
-import com.suman.network_library.internal.DownloadRequest
-import com.suman.network_library.utils.FileNameUtils
+import com.suman.downloader.internal.DownloadRequest
+import com.suman.downloader.utils.FileNameUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext

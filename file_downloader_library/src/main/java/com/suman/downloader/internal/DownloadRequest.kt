@@ -1,8 +1,8 @@
-package com.suman.network_library.internal
+package com.suman.downloader.internal
 
-import com.suman.network_library.DownloaderConfig
-import com.suman.network_library.local_storage.DownloadEntity
-import com.suman.network_library.utils.getUniqueId
+import com.suman.downloader.DownloaderConfig
+import com.suman.downloader.local_storage.DownloadEntity
+import com.suman.downloader.utils.getUniqueId
 import kotlinx.coroutines.Job
 
 class DownloadRequest private constructor(

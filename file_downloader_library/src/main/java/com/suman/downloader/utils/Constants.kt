@@ -1,4 +1,4 @@
-package com.suman.network_library.utils
+package com.suman.downloader.utils
 
 object Constants {
     const val DEFAULT_READ_TIMEOUT_MILLIS = 60_000
