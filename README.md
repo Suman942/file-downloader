@@ -58,40 +58,37 @@ file_downloader_library
 ```
 ## ⚙️ System Flow / Architecture
 
-```mermaid
-flowchart TD
+The downloader is designed as a queue-based, coroutine-driven system to efficiently manage multiple downloads with support for pause, resume, and progress tracking.
 
-A[Application] --> B[Downloader.create]
+---
 
-B --> C[Build DownloadRequest]
+### 🔁 How it Works
 
-C --> D[enqueue]
+- Download requests are created using the `Downloader` API  
+- Each request is added to a **DownloadRequestQueue**  
+- A dispatcher manages execution and controls parallel downloads  
+- Each request is processed as a separate **DownloadTask**  
+- Downloads run using **Kotlin Coroutines** for non-blocking execution  
+- Progress and state are stored in a **local database**  
+- On resume, downloads continue from the last saved byte using HTTP **Range headers**
 
-D --> E[DownloadRequestQueue]
+---
 
-E --> F[DownloadDispatchers - Manage Worker Threads]
+### 🔄 Flow Summary
+Request → Queue → Dispatcher → Task → Network → File System
+↓
+Database (Progress / State)
 
-F --> G[DownloadTask]
+---
 
-G --> H[NetworkMonitor - Check Internet]
+### ⚡ Key Highlights
 
-H --> I[HttpURLConnection - Open Connection]
+- **Queue-based system** → Efficient request management  
+- **Coroutine-powered** → Lightweight and asynchronous  
+- **Parallel downloads** → Multiple files can download simultaneously  
+- **Persistent state** → Supports resume even after interruption  
+- **Clean separation** → API, queue, worker, and storage layers  
 
-I --> J[Read Input Stream]
-
-J --> K[Write File Chunks]
-
-K --> L[Progress Callback]
-
-L --> M{Download Complete?}
-
-M -- No --> J
-M -- Yes --> N[Save Download State in DB]
-
-N --> O[Trigger onComplete Callback]
-
-O --> P[Update Application UI]
-```
 ## 🎥 Demo
 
 <p align="center">
@@ -119,7 +116,7 @@ allprojects {
 ## Step 2: Add dependency
 
 ```gradle
-implementation 'com.github.Suman942:file-downloader:1.0.1'
+implementation 'com.github.Suman942:file-downloader:1.0.2'
 ```
 
 ---
@@ -139,11 +136,11 @@ Recommended:
 # 📥 Create Download Request
 
 ```kotlin
-val request = downloader.newReqBuilder(
-    url,
-    destinationPath,
-    fileName
-).build()
+val request = Downloader.download(
+    url = "...",
+    destination = "...",
+    fileName = "..."
+)
 ```
 
 ### Example
@@ -215,9 +212,14 @@ downloader.cancel(id)
 
 ---
 
-# 📄 License
+## Why this library?
 
-MIT License
+Android's default DownloadManager has limitations:
+- Limited customization
+- No fine-grained progress control
+- Hard to integrate with modern architecture
+
+This library solves these using coroutines and a custom queue system.
 
 ---
 
@@ -228,5 +230,16 @@ MIT License
 GitHub:  
 https://github.com/Suman942
 
+---
+
 # Medium
 **https://medium.com/@suman.shil.942/building-a-lightweight-android-file-downloader-library-using-kotlin-coroutines-and-b51396cb0af3**
+---
+# LinkedIn
+**https://www.linkedin.com/in/suman-shil-204177191/**
+---
+# 📄 License
+MIT License
+
+
+
